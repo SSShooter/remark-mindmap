@@ -1,0 +1,65 @@
+{
+  "name": "remark-mindmap",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Render ```mindelixir code blocks in Markdown as interactive, pan-and-zoom Mind Elixir mind maps.",
+  "keywords": [
+    "mind-elixir",
+    "mindmap",
+    "mind-map",
+    "remark",
+    "remark-plugin",
+    "markdown",
+    "astro",
+    "vite"
+  ],
+  "license": "MIT",
+  "author": "SSShooter",
+  "homepage": "https://mind-elixir.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mind-elixir/remark-mindmap.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mind-elixir/remark-mindmap/issues"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/remark.d.ts",
+      "import": "./dist/remark.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js"
+    },
+    "./style.css": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "mind-elixir": "^6.0.0-next.4"
+  },
+  "scripts": {
+    "build": "tsup && node scripts/copy-assets.mjs",
+    "dev": "tsup --watch",
+    "test": "npm run build && node --test \"test/*.test.mjs\"",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm test"
+  },
+  "devDependencies": {
+    "rehype-stringify": "^10.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "unified": "^11.0.5"
+  }
+}

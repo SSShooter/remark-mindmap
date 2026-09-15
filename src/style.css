@@ -1,0 +1,46 @@
+/**
+ * remark-mindmap —— 容器样式
+ *
+ * 所有视觉可调项都是 CSS 变量，JS 里不写死任何值：
+ *   --mde-accent             中心节点底色，例如 hsl(var(--brand)) 对接站点主色
+ *   --mde-accent-foreground  中心节点文字色，默认 #ffffff
+ *   --mde-loading-text       渲染完成前的占位文案，设为 "" 可关闭
+ */
+
+.mindmap {
+  position: relative;
+  margin: 1.25em 0;
+  /* 免得思维导图把正文撑得比正文栏还宽 */
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* 左上角那三个是 LHS / RHS / SIDE 布局切换，是编辑器功能，读文章用不上。
+   mind-elixir 没有单独关掉它的选项，只能这样盖掉。 */
+.mindmap .mind-elixir-toolbar.lt {
+  display: none;
+}
+
+/* 渲染完成前先给个交代，免得看起来像一块空白 */
+.mindmap:not([data-mindmap-ready])::after {
+  content: var(--mde-loading-text, "Loading mind map…");
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  opacity: 0.4;
+}
+
+/* 节点内代码片段跟着正文的等宽字体走 */
+.mindmap .me-tpc code {
+  font-family: var(--mde-mono-font, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.9em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mindmap * {
+    transition-duration: 0.01ms !important;
+  }
+}
