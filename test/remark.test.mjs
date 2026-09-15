@@ -8,13 +8,13 @@ import rehypeStringify from "rehype-stringify";
 
 // 关键：这里 import 的是包自己的 name，走的是 package.json 的 exports，
 // 也就是发布出去的那份产物 —— 测试验证的是 dist，不是 src。
-import { remarkMindElixir } from "remark-mindmap";
+import { remarkMindmap } from "remark-mindmap";
 import { createInlineMarkdown, detectThemeMode, mountMindMaps } from "remark-mindmap/client";
 
 const render = async (markdown, pluginOptions) => {
   const processor = unified().use(remarkParse);
-  if (pluginOptions === undefined) processor.use(remarkMindElixir);
-  else processor.use(remarkMindElixir, pluginOptions);
+  if (pluginOptions === undefined) processor.use(remarkMindmap);
+  else processor.use(remarkMindmap, pluginOptions);
 
   return String(
     await processor
@@ -25,7 +25,7 @@ const render = async (markdown, pluginOptions) => {
 };
 
 test("exports 的每个入口都可解析", () => {
-  assert.equal(typeof remarkMindElixir, "function");
+  assert.equal(typeof remarkMindmap, "function");
   assert.equal(typeof mountMindMaps, "function");
   assert.equal(typeof detectThemeMode, "function");
   assert.equal(typeof createInlineMarkdown, "function");

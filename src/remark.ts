@@ -27,7 +27,7 @@ interface MdastNode {
   [key: string]: unknown;
 }
 
-export interface RemarkMindElixirOptions {
+export interface RemarkMindmapOptions {
   /** 识别的代码块语言，默认 `mindelixir` */
   lang?: string;
   /** 容器默认高度（px），代码块 meta 里写 `height=560` 可逐个覆盖 */
@@ -59,7 +59,7 @@ function parseHeight(meta: unknown): number | undefined {
   return matched?.[1] ? Number(matched[1]) : undefined;
 }
 
-export function remarkMindElixir(options: RemarkMindElixirOptions = {}) {
+export function remarkMindmap(options: RemarkMindmapOptions = {}) {
   const config = { ...DEFAULTS, ...options };
   const targetLang = config.lang.toLowerCase();
   const classes = [config.wrapperClass, config.className].filter(Boolean).join(" ");
@@ -103,4 +103,4 @@ export function remarkMindElixir(options: RemarkMindElixirOptions = {}) {
   };
 }
 
-export default remarkMindElixir;
+export default remarkMindmap;

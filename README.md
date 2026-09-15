@@ -42,11 +42,11 @@ They're split because the two runtimes are mutually exclusive: the client entry 
 ```js
 // astro.config.mjs
 import { defineConfig } from "astro/config";
-import remarkMindElixir from "remark-mindmap";
+import remarkMindmap from "remark-mindmap";
 
 export default defineConfig({
   markdown: {
-    remarkPlugins: [remarkMindElixir],
+    remarkPlugins: [remarkMindmap],
   },
 });
 ```
@@ -74,11 +74,11 @@ import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
-import remarkMindElixir from "remark-mindmap";
+import remarkMindmap from "remark-mindmap";
 
 const processor = unified()
   .use(remarkParse)
-  .use(remarkMindElixir)
+  .use(remarkMindmap)
   .use(remarkRehype, { allowDangerousHtml: true })
   .use(rehypeStringify, { allowDangerousHtml: true });
 ```
@@ -96,7 +96,7 @@ void mountMindMaps();
 
 ## Options
 
-### `remarkMindElixir(options)`
+### `remarkMindmap(options)`
 
 | Option | Default | Description |
 | --- | --- | --- |
