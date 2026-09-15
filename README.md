@@ -106,6 +106,9 @@ void mountMindMaps();
 | `wrapperClass` | `"mindmap"` | Container class; matches the rules in `style.css` |
 | `sourceClass` | `"mindmap-source"` | Class of the `<pre>` holding the raw text |
 | `dataAttribute` | `"mindmap"` | `data-*` attribute marking the container — keep in sync with the client's `selector` |
+| `a11y` | `true` | Emit a visually hidden semantic list and mark the canvas `role="img"` — see [Accessibility](#accessibility-and-crawlers) |
+| `a11yClass` | `""` | Extra class on the list container (the base class is `mindmap-a11y`) |
+| `rootTopic` | `"Mind Map"` | Name for the synthetic root when the plaintext has no single root — keep in sync with the client |
 
 ### `mountMindMaps(options)`
 
@@ -167,6 +170,38 @@ So after `init()`, the width ratio is measured:
 - Overflows **a lot** (narrow screens) → keeps its natural size and relies on drag / full screen, rather than shrinking into mush.
 
 Tune with `minFitScale`: raise it (e.g. `0.8`) to allow more shrinking, lower it to shrink less often.
+
+## Accessibility and crawlers
+
+A rendered map is a pile of absolutely positioned `div`s, so the text inside it reads as a word salad in layout order — any hierarchy is gone. Two audiences feel this: screen readers, and search engines that execute JS.
+
+The plugin therefore compiles the same plaintext into a semantic list at build time, right after the canvas:
+
+```html
+<div class="mindmap" data-mindmap role="img" aria-label="产品研发流程" style="height:460px">…</div>
+<div class="mindmap-a11y" data-mindmap-a11y>
+  <ul>
+    <li>产品研发流程<ul>
+      <li>调研阶段<ul>
+        <li>用户访谈</li>
+        <li>竞品分析</li>
+        <li>调研总结</li>       <!-- summary label -->
+      </ul></li>
+      <li>开发阶段<ul><li>架构设计</li></ul></li>
+    </ul></li>
+  </ul>
+  <ul><li>调研阶段 → 开发阶段（进入）</li></ul>  <!-- arrows, relations only -->
+</div>
+```
+
+Notes:
+
+- The list is built by mind-elixir's own `plaintextToMindElixir`, not by a second parser here — so it can't drift from what's drawn.
+- `role="img"` + `aria-label` (the root topic) stops assistive tech from reading the canvas **and** the list. Pass `a11y: false` to opt out of both.
+- It has to sit *outside* the canvas: mind-elixir's constructor clears the host element's `innerHTML`, so anything inside is wiped on render.
+- The list is hidden with `clip-path`, not `display: none` — `display: none` would remove it from the accessibility tree too, defeating the point. **`remark-mindmap/style.css` is required**; without it the list would be visible text under every map.
+- Plaintext that no JS executes (`curl`, and search engines that don't render) still gets the raw `<pre hidden>` copy, syntax markers included. That is the fallback, not a bug.
+- Known rough edge, inherited from mind-elixir: its `.map-container` is a `tabindex="0"` keyboard target inside the `role="img"` subtree, so it's reachable by keyboard but anonymous to screen readers.
 
 ## Known behaviour
 

@@ -87,6 +87,70 @@ test("正文的其余部分不受影响", async () => {
   assert.ok(html.includes("后面一段。"));
 });
 
+const SAMPLE = [
+  "```mindelixir",
+  "- 产品研发流程",
+  "  - 调研阶段 [^research]",
+  "    - 用户访谈",
+  "    - 竞品分析",
+  "    - }:2 调研总结",
+  "  - 开发阶段 [^dev]",
+  "    - 架构设计",
+  "    - > [^research] >-进入-> [^dev]",
+  "```",
+  "",
+].join("\n");
+
+test("层次被编译成语义化列表，且放在画布外面", async () => {
+  const html = await render(SAMPLE);
+
+  assert.ok(html.includes('role="img" aria-label="产品研发流程"'), html.match(/<div[^>]*>/)?.[0]);
+  assert.ok(html.includes('class="mindmap-a11y" data-mindmap-a11y'));
+
+  // 三层缩进 → 三层嵌套列表
+  assert.ok(html.includes("<li>调研阶段<ul>"), html);
+  assert.ok(html.includes("<li>用户访谈</li>"));
+  assert.ok(html.includes("<li>架构设计</li>"));
+
+  // 画布的清空行为会连列表一起抹掉，所以列表必须在画布闭合标签之后
+  const canvasEnd = html.indexOf("</pre></div>");
+  assert.ok(canvasEnd < html.indexOf('data-mindmap-a11y'), "列表必须跟在画布之后");
+});
+
+test("概要与连线不会丢，且连线另起一棵列表", async () => {
+  const html = await render(SAMPLE);
+
+  assert.ok(html.includes("<li>调研总结</li>"), "概要文字要保留");
+  assert.ok(html.includes("<li>调研阶段 → 开发阶段（进入）</li>"), html);
+});
+
+test("节点文字里的 HTML 与引号都被转义", async () => {
+  const html = await render('```mindelixir\n- 说 "引号" <script>\n```\n');
+
+  assert.ok(html.includes('aria-label="说 &quot;引号&quot; &lt;script&gt;"'));
+  assert.ok(!html.includes("<script>"));
+});
+
+test("a11y: false 时既不产出列表也不加 role", async () => {
+  const html = await render("```mindelixir\n- 根\n  - 子\n```\n", { a11y: false });
+
+  assert.ok(!html.includes("mindmap-a11y"));
+  assert.ok(!html.includes('role="img"'));
+  assert.ok(html.includes("data-mindmap"), "画布本身照旧");
+});
+
+test("空代码块不产出列表", async () => {
+  const html = await render("```mindelixir\n\n```\n");
+
+  assert.ok(!html.includes("mindmap-a11y"));
+});
+
+test("a11yClass 会追加到列表容器上", async () => {
+  const html = await render("```mindelixir\n- 根\n```\n", { a11yClass: "sr-only" });
+
+  assert.ok(html.includes('class="mindmap-a11y sr-only"'));
+});
+
 test("行内 markdown：粗体、代码、链接", () => {
   const inline = createInlineMarkdown();
 

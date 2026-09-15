@@ -33,6 +33,22 @@
   opacity: 0.4;
 }
 
+/* 画布的文本替代：结构是给屏幕阅读器和抓取器的，视觉上必须彻底不占位。
+   用 clip-path + 1px 的标准做法，而不是 display:none —— display:none 会被
+   辅助技术一起丢掉，那就白写了。 */
+.mindmap-a11y {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* 节点内代码片段跟着正文的等宽字体走 */
 .mindmap .me-tpc code {
   font-family: var(--mde-mono-font, ui-monospace, SFMono-Regular, Menlo, monospace);

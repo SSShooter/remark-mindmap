@@ -1,6 +1,6 @@
 {
   "name": "remark-mindmap",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "Render ```mindelixir code blocks in Markdown as interactive, pan-and-zoom Mind Elixir mind maps.",
   "keywords": [
