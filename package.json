@@ -18,10 +18,10 @@
   "homepage": "https://mind-elixir.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mind-elixir/remark-mindmap.git"
+    "url": "git+https://github.com/SSShooter/remark-mindmap.git"
   },
   "bugs": {
-    "url": "https://github.com/mind-elixir/remark-mindmap/issues"
+    "url": "https://github.com/SSShooter/remark-mindmap/issues"
   },
   "exports": {
     ".": {
